@@ -16,6 +16,7 @@ cogs: list = ["Functions.Admin.update"]
 bot = commands.Bot(command_prefix=settings.Prefix, help_command=None, intents=intents)
 
 JonHate = 0
+JonID = 343261954422341653
 
 #sends random number to designated channel
 async def send_random_number():
@@ -23,32 +24,29 @@ async def send_random_number():
     if channel:
         JonHate = random.randint(0, 100)
         if JonHate == 100:
-            await channel.send(max_hate())
+            await channel.send(f"MAX HATE! JO(H)N METER AT: 100% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
         elif JonHate == 0:
-            await channel.send(min_hate())
+            await channel.send(f"min hate, Jonathan beloved meter at 0% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
         else:
-            await channel.send(f"Jon Hate Meter At: {JonHate}%")
+            await channel.send(f"<@{JonID}> Hate Meter At: {JonHate}%")
 
 #checks the time and sends random number at 7am and 7pm pst
 async def check_time():
     while True:
         now = datetime.now()
-        if now.hour == 8 and now.minute == 0 and now.second < 30:
+        channel = bot.get_channel(settings.CHANNEL_ID)
+        if now.hour == 7 and now.minute == 0 and now.second < 30:
+            if channel:
+                await channel.send(f"Ehrm... it's 7am pst?? time to update Jon Hate!")
             await send_random_number()
             await asyncio.sleep(61)  # Sleep for 61 seconds to avoid sending multiple messages in the same minute
-        elif now.hour == 20 and now.minute == 0 and now.second < 30:
+        elif now.hour == 19 and now.minute == 0 and now.second < 30:
+            if channel:
+                await channel.send(f"Ehrm... it's 7pm pst?? time to update Jon Hate!")
             await send_random_number()
             await asyncio.sleep(61)  # Sleep for 61 seconds to avoid sending multiple messages in the same minute
         else:
             await asyncio.sleep(1)  # Check every second
-
-#for max jon hate
-async def max_hate():
-    return "MAX HATE! JO(H)N METER AT: 100%"
-    
-#for min jon hate
-async def min_hate():
-    return "min hate, Jonathan beloved meter at 0%"
     
 #initializes bot
 class Init(commands.Bot):
@@ -80,23 +78,19 @@ bot = Init(command_prefix=settings.Prefix, intents=intents)
 #command to manually update jon hate
 @bot.command()
 async def update(ctx: commands.Context):
-        JonHate = random.randint(0, 100)
-        if JonHate == 100:
-            await ctx.send(max_hate())
-        elif JonHate == 0:
-            await ctx.send(min_hate())
-        else:
-            await ctx.send(f"Jon Hate Meter At: {JonHate}%")
+    await ctx.send("yes xir")
+    channel = bot.get_channel(settings.CHANNEL_ID)
+    if channel:
+        await channel.send(f"Manual Update:")
+    await send_random_number()
         
 #slash command to manually update jon hate
 @bot.slash_command(description="Manually update Jon hate meter")
 async def update(interaction: disnake.ApplicationCommandInteraction):
-        JonHate = random.randint(0, 100)
-        if JonHate == 100:
-            await interaction.send(max_hate())
-        elif JonHate == 0:
-            await interaction.send(min_hate())
-        else:
-            await interaction.send(f"Jon Hate Meter At: {JonHate}%")
+    await interaction.send("yes xir")
+    channel = bot.get_channel(settings.CHANNEL_ID)
+    if channel:
+        await channel.send(f"Manual Update:")
+    await send_random_number()
 
 bot.run(settings.TOKEN)
