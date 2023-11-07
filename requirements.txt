@@ -1,4 +1,5 @@
 discord.py
+disnake.py
 beautifulsoup4
 urllib3
 requests

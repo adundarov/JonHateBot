@@ -1,46 +1,69 @@
-import discord
+import disnake
 import os
 import random
 import asyncio
 from datetime import datetime
-from discord.ext import commands
+from disnake.ext import commands
 import settings
 
-intents = discord.Intents.default()
+intents = disnake.Intents.all()
 intents.typing = False
 intents.presences = False
+intents.message_content = True
 
-cogs: list = ["Functions.Fun.games", "Functions.Fun.gameinfos", "Functions.Fun.otherfuncommands", "Functions.Info.info",
-        "Functions.Misc.misc", "Functions.NewMember.newmember", "Functions.Admin.admin"]
+cogs: list = ["Functions.Admin.update"]
 
-client = commands.Bot(command_prefix=settings.Prefix, help_command=None, intents=intents)
+bot = commands.Bot(command_prefix=settings.Prefix, help_command=None, intents=intents)
 
+JonHate = 0
+
+#sends random number to designated channel
 async def send_random_number():
-    # Replace YOUR_CHANNEL_ID with the actual channel ID where you want to send the messages
-    channel = client.get_channel(settings.CHANNEL_ID)
+    channel = bot.get_channel(settings.CHANNEL_ID)
     if channel:
-        random_num = random.randint(1, 100)
-        await channel.send(f"Random number: {random_num}")
+        JonHate = random.randint(0, 100)
+        if JonHate == 100:
+            await channel.send(max_hate())
+        elif JonHate == 0:
+            await channel.send(min_hate())
+        else:
+            await channel.send(f"Jon Hate Meter At: {JonHate}%")
 
+#checks the time and sends random number at 7am and 7pm pst
 async def check_time():
     while True:
         now = datetime.now()
-        if now.hour == 8 and now.minute == 0 and now.second == 0:
+        if now.hour == 8 and now.minute == 0 and now.second < 30:
             await send_random_number()
             await asyncio.sleep(61)  # Sleep for 61 seconds to avoid sending multiple messages in the same minute
-        elif now.hour == 20 and now.minute == 0 and now.second == 0:
+        elif now.hour == 20 and now.minute == 0 and now.second < 30:
             await send_random_number()
             await asyncio.sleep(61)  # Sleep for 61 seconds to avoid sending multiple messages in the same minute
         else:
             await asyncio.sleep(1)  # Check every second
 
-## for when we add commands
-
-@client.event
-async def on_ready():
-    print("Bot is ready!")
-    await client.change_presence(status=discord.Status.online, activity=discord.Game(settings.BotStatus))
+#for max jon hate
+async def max_hate():
+    return "MAX HATE! JO(H)N METER AT: 100%"
     
+#for min jon hate
+async def min_hate():
+    return "min hate, Jonathan beloved meter at 0%"
+    
+#initializes bot
+class Init(commands.Bot):
+    def __init__(self, command_prefix, intents = intents):
+        super().__init__(command_prefix, intents = intents)
+        
+    async def on_ready(self):
+        print(f"Logged in as {self.user.name} - {self.user.id}")
+        await bot.change_presence(status=disnake.Status.online, activity=disnake.Game(settings.BotStatus))
+        
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        await self.process_commands(message)
+        
     # for cog in cogs:
     #     try:
     #         print(f"Loading cog {cog}")
@@ -50,6 +73,30 @@ async def on_ready():
     #         exc = "{}: {}".format(type(e).__name__, e)
     #         print("Failed to load cog {}\n{}".format(cog, exc))
     
-    client.loop.create_task(check_time())  # Start the time checking loop
+    bot.loop.create_task(check_time())  # Start the time checking loop
+    
+bot = Init(command_prefix=settings.Prefix, intents=intents)
 
-client.run(settings.TOKEN)
+#command to manually update jon hate
+@bot.command()
+async def update(ctx: commands.Context):
+        JonHate = random.randint(0, 100)
+        if JonHate == 100:
+            await ctx.send(max_hate())
+        elif JonHate == 0:
+            await ctx.send(min_hate())
+        else:
+            await ctx.send(f"Jon Hate Meter At: {JonHate}%")
+        
+#slash command to manually update jon hate
+@bot.slash_command(description="Manually update Jon hate meter")
+async def update(interaction: disnake.ApplicationCommandInteraction):
+        JonHate = random.randint(0, 100)
+        if JonHate == 100:
+            await interaction.send(max_hate())
+        elif JonHate == 0:
+            await interaction.send(min_hate())
+        else:
+            await interaction.send(f"Jon Hate Meter At: {JonHate}%")
+
+bot.run(settings.TOKEN)
