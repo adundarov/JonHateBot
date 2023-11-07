@@ -84,26 +84,27 @@ bot = Init(command_prefix=settings.Prefix, intents=intents)
 #         await channel.send(f"Manual Update:")
 #     await send_random_number()
         
-#slash command to manually update jon hate
-@bot.slash_command(description="Manually update Jon hate meter")
-async def update(interaction: disnake.ApplicationCommandInteraction):
-    await interaction.send("yes xir")
-    channel = bot.get_channel(settings.CHANNEL_ID)
-    if channel:
-        await channel.send(f"Manual Update:")
-    await send_random_number()
+# #slash command to manually update jon hate
+# @bot.slash_command(description="Manually update Jon hate meter")
+# async def update(interaction: disnake.ApplicationCommandInteraction):
+#     await interaction.send("yes xir")
+#     channel = bot.get_channel(settings.CHANNEL_ID)
+#     if channel:
+#         await channel.send(f"Manual Update:")
+#     await send_random_number()
     
-@bot.slash_command(description="Total Hate")
-async def hate(interaction: disnake.ApplicationCommandInteraction):
-    await interaction.send("yes xir")
-    channel = bot.get_channel(settings.CHANNEL_ID)
-    if channel:
-        await channel.send(f"MAX HATE! JO(H)N METER AT: 100% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
+# @bot.slash_command(description="Total Hate")
+# async def hate(interaction: disnake.ApplicationCommandInteraction):
+#     await interaction.send("yes xir")
+#     channel = bot.get_channel(settings.CHANNEL_ID)
+#     if channel:
+#         await channel.send(f"MAX HATE! JO(H)N METER AT: 100% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
         
-@bot.slash_command(description="Total Love")
-async def love(interaction: disnake.ApplicationCommandInteraction):
-    await interaction.send("yes xir")
-    channel = bot.get_channel(settings.CHANNEL_ID)
-    if channel:
-        await channel.send(f"min hate, Jonathan beloved meter at 0% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
+# @bot.slash_command(description="Total Love")
+# async def love(interaction: disnake.ApplicationCommandInteraction):
+#     await interaction.send("yes xir")
+#     channel = bot.get_channel(settings.CHANNEL_ID)
+#     if channel:
+#         await channel.send(f"min hate, Jonathan beloved meter at 0% <@{JonID}><@{JonID}><@{JonID}><@{JonID}><@{JonID}>")
+        
 bot.run(settings.TOKEN)
